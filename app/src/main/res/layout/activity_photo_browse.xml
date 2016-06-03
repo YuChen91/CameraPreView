@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:id="@+id/parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ff000000" />
+
+        <com.cy.camerapreview.widget.photoview.PhotoView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+</RelativeLayout>
