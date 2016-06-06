@@ -278,85 +278,18 @@ public class CameraPreViewActivity extends Activity {
 	}
 
 	/**
-	 * 保存图片到本地
-	 * @param bitmap Bitmap
-	 * @return 图片文件路径
-     */
-	public String saveImage(Bitmap bitmap) {
-		String status = Environment.getExternalStorageState();
-		SimpleDateFormat timeFormatter = new SimpleDateFormat(
-				"yyyyMMdd_HHmmss", Locale.CHINA);
-		long time = System.currentTimeMillis();
-		String imageName = timeFormatter.format(new Date(time));
-		// 创建一个位于SD卡上的文件
-		File file = new File(Environment.getExternalStorageDirectory(),
-				imageName + ".jpg");
-		FileOutputStream outStream = null;
-		try {
-			// 打开指定文件对应的输出流
-			outStream = new FileOutputStream(file);
-			// 把位图输出到指定文件中
-			bitmap.compress(CompressFormat.JPEG, 100, outStream);
-			outStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Log.e("path",file.getAbsolutePath()+"");
-		return file.getAbsolutePath();
-	}
-
-	/**
-	 * 旋转Bitmap
-	 * @param b Bitmap
-	 * @param rotateDegree 选择角度
-     * @return 返回旋转后的Bitmap
-     */
-	public static Bitmap getRotateBitmap(Bitmap b, float rotateDegree) {
-		Matrix matrix = new Matrix();
-		matrix.postRotate((float) rotateDegree);
-		Bitmap rotaBitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
-				b.getHeight(), matrix, false);
-		return rotaBitmap;
-	}
-
-	/**
-	 * 获取缩放后的Bitmap
-	 * @param byteArr 字节数组
-	 * @param reqWidth 宽度
-	 * @param reqHeight 高度
-     * @return 缩放Bitmap
-     */
-	public Bitmap getSampleBitmap(byte[] byteArr, int reqWidth, int reqHeight) {
-		// 计算sampleSize
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-
-		// 调用方法后，option已经有图片宽高信息
-		BitmapFactory.decodeByteArray(byteArr, 0, byteArr.length, options);
-
-		// 计算最相近缩放比例
-		options.inSampleSize = ImageUtils.calculateInSampleSize(options,
-				reqWidth, reqHeight);
-		options.inJustDecodeBounds = false;
-
-		// 这个Bitmap out只有宽高
-		return BitmapFactory.decodeByteArray(byteArr, 0, byteArr.length,
-				options);
-	}
-
-	/**
 	 * 保存图片
 	 * @param data 图片字节数组
      */
 	private void savaImageGetBitmap(byte[] data){
 				Bitmap bitmap_old = BitmapFactory
 						.decodeByteArray(data, 0, data.length);
-				bitmap_old = getRotateBitmap(bitmap_old, 90);
+				bitmap_old = ImageUtils.getRotateBitmap(bitmap_old, 90);
 //				Message msg = new Message();
 //				msg.what = 1;
 //				msg.obj = bitmap_old;
 //				mHandler.sendMessage(msg);
-				String path = saveImage(bitmap_old);
+				String path = ImageUtils.saveImage(bitmap_old);
 //				Bitmap bitmap_new = getSampleBitmap(data, 150, 150);
 				mArrayList_urls.add(path);
 				Message msg1 = new Message();
