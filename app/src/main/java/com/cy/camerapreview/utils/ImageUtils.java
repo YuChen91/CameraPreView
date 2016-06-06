@@ -6,16 +6,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class ImageUtils {
 
@@ -223,5 +229,90 @@ public class ImageUtils {
 	public static boolean saveBitmap(Bitmap bitmap, String absPath) {
         return saveBitmap(bitmap, new File(absPath));
     }
+
+	/**
+	 * 保存图片到本地
+	 * @param bitmap Bitmap
+	 * @return 图片文件路径
+	 */
+	public static String saveImage(Bitmap bitmap) {
+        String status = Environment.getExternalStorageState();
+        if(status.equals(Environment.MEDIA_MOUNTED)){
+            SimpleDateFormat timeFormatter = new SimpleDateFormat(
+                    "yyyyMMdd_HHmmss", Locale.CHINA);
+            long time = System.currentTimeMillis();
+            String imageName = timeFormatter.format(new Date(time));
+
+            // 创建文件夹
+            File appDir = new File(Environment.getExternalStorageDirectory(), "CameraPreViewPhoto");
+            if (!appDir.exists()) {
+                appDir.mkdir();
+            }
+
+            // 创建一个位于SD卡上的文件
+            File file = new File(appDir, imageName + ".jpg");
+            FileOutputStream outStream = null;
+            try {
+                // 打开指定文件对应的输出流
+                outStream = new FileOutputStream(file);
+                // 把位图输出到指定文件中
+                bitmap.compress(CompressFormat.JPEG, 100, outStream);
+                outStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // 其次把文件插入到系统图库
+//		    try {
+//		        MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), imageName, null);
+//		    } catch (FileNotFoundException e) {
+//		        e.printStackTrace();
+//		    }
+            // 最后通知图库更新
+//		    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
+            return file.getAbsolutePath();
+        }else {
+            return null;
+        }
+	}
+
+	/**
+	 * 旋转Bitmap
+	 * @param b Bitmap
+	 * @param rotateDegree 选择角度
+	 * @return 返回旋转后的Bitmap
+	 */
+	public static Bitmap getRotateBitmap(Bitmap b, float rotateDegree) {
+		Matrix matrix = new Matrix();
+		matrix.postRotate((float) rotateDegree);
+		Bitmap rotaBitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
+				b.getHeight(), matrix, false);
+		return rotaBitmap;
+	}
+
+	/**
+	 * 获取缩放后的Bitmap
+	 * @param byteArr 字节数组
+	 * @param reqWidth 宽度
+	 * @param reqHeight 高度
+	 * @return 缩放Bitmap
+	 */
+	public Bitmap getSampleBitmap(byte[] byteArr, int reqWidth, int reqHeight) {
+		// 计算sampleSize
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+
+		// 调用方法后，option已经有图片宽高信息
+		BitmapFactory.decodeByteArray(byteArr, 0, byteArr.length, options);
+
+		// 计算最相近缩放比例
+		options.inSampleSize = ImageUtils.calculateInSampleSize(options,
+				reqWidth, reqHeight);
+		options.inJustDecodeBounds = false;
+
+		// 这个Bitmap out只有宽高
+		return BitmapFactory.decodeByteArray(byteArr, 0, byteArr.length,
+				options);
+	}
 
 }
