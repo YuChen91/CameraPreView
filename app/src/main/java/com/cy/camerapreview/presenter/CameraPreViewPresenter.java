@@ -1,5 +1,11 @@
 package com.cy.camerapreview.presenter;
 
+import android.hardware.Camera;
+
+import com.cy.camerapreview.widget.CameraPreviewSurfaceView;
+
+import java.util.ArrayList;
+
 /**
  * CameraPreViewPresenter
  *
@@ -7,6 +13,7 @@ package com.cy.camerapreview.presenter;
  * @date 2016/6/3
  */
 public interface CameraPreViewPresenter {
-    void camera();
-
+    void initCamera(Camera camera, CameraPreviewSurfaceView cameraPreviewSurfaceView);
+    void camera(byte[] data);
+    void submitImages();
 }

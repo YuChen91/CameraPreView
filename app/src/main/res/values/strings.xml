@@ -2,4 +2,6 @@
     <string name="app_name">CameraPreView</string>
     <string name="biu">BIU</string>
     <string name="image">image</string>
+    <string name="submit">完成</string>
+    <string name="failed">失败</string>
 </resources>
