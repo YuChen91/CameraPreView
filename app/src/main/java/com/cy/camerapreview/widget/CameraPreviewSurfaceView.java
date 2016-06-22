@@ -95,7 +95,12 @@ public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHold
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         parameters.setPictureSize(mPictureSize.width, mPictureSize.height);
         requestLayout();
-        camera.setParameters(parameters);
+        try{
+            camera.setParameters(parameters);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -197,8 +202,13 @@ public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHold
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         parameters.setPictureSize(mPictureSize.width, mPictureSize.height);
         requestLayout();
-        mCamera.setParameters(parameters);
-        mCamera.startPreview();
+        try{
+            mCamera.setParameters(parameters);
+            mCamera.startPreview();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void fixOrientation(Camera.Parameters parameters) {
@@ -282,9 +292,13 @@ public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHold
 
             parameters.setMeteringAreas(meteringAreas);
         }
+        try{
+            mCamera.setParameters(parameters);
+            mCamera.autoFocus(this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-        mCamera.setParameters(parameters);
-        mCamera.autoFocus(this);
     }
 
     public Camera.Size getResolution() {
@@ -378,8 +392,12 @@ public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHold
                     Toast.makeText(item, "Macro Mode not supported", Toast.LENGTH_SHORT).show();
                 break;
         }
+        try{
+            mCamera.setParameters(params);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-        mCamera.setParameters(params);
     }
 
     public void setFlashMode (Context item, int type){
@@ -418,8 +436,11 @@ public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHold
                     Toast.makeText(item, "Torch Mode not supported", Toast.LENGTH_SHORT).show();
                 break;
         }
-
-        mCamera.setParameters(params);
+        try{
+            mCamera.setParameters(params);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
